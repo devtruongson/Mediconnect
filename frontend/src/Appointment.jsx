@@ -33,7 +33,17 @@ const AppointmentList = () => {
         // Handle API response structure
         const appointmentsData = response.data?.data || response.data || [];
         if (Array.isArray(appointmentsData)) {
-          setAppointments(appointmentsData);
+          // Map API data to frontend format
+          const mappedAppointments = appointmentsData.map(apt => ({
+            appointment_id: apt.appointment_id,
+            patient_id: apt.patient_id,
+            patient_name: apt.patient?.name || 'Unknown Patient',
+            availability_id: apt.availability_id,
+            date: apt.availability?.available_date || apt.date,
+            slot: apt.availability?.available_time || apt.slot,
+            status: apt.status
+          }));
+          setAppointments(mappedAppointments);
         } else {
           console.error('Invalid appointments data:', appointmentsData);
           setAppointments([]);
@@ -59,7 +69,7 @@ const AppointmentList = () => {
       setLoading(true);
       
       // Update appointment status via API
-      const response = await axios.put(`http://localhost:8000/api/appointments/${id}`, {
+      const response = await axios.post(`http://localhost:8000/api/appointments/${id}/status`, {
         status: newStatus
       }, {
         headers: {
