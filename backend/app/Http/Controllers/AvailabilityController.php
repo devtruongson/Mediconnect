@@ -139,7 +139,16 @@ class AvailabilityController extends Controller
         if ($availability->status === 'booked') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete a booked slot'
+                'message' => 'Cannot delete a booked slot. Please cancel the appointment first, then the slot will become available for deletion.'
+            ], 400);
+        }
+
+        // Additional check: verify no active appointments exist for this slot
+        $hasAppointment = $availability->appointments()->exists();
+        if ($hasAppointment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete slot with active appointments. Please cancel the appointment first.'
             ], 400);
         }
 

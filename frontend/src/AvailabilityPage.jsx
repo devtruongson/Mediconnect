@@ -58,6 +58,7 @@ const DoctorAvailability = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [compactMode, setCompactMode] = useState(false);
 
   // Fetch availabilities from API
   useEffect(() => {
@@ -105,6 +106,13 @@ const DoctorAvailability = () => {
 
     fetchAvailabilities();
   }, [finalDoctorId]);
+
+  // Cleanup compact mode when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('compact-mode');
+    };
+  }, []);
 
   const addOneHour = (time) => {
     if (!time || typeof time !== 'string') return '00:00';
@@ -202,6 +210,13 @@ const DoctorAvailability = () => {
 
   const handleDelete = async (index) => {
     const entry = availabilities[index];
+    
+    // Check if slot is booked
+    if (entry.status === 'booked') {
+      alert('Cannot delete a booked slot. Please cancel the appointment first, then the slot will become available for deletion.');
+      return;
+    }
+    
     const confirmDelete = window.confirm(
       `Are you sure you want to delete the slot on ${entry.available_date || entry.date} at ${entry.available_time || entry.slot}?`
     );
@@ -228,7 +243,11 @@ const DoctorAvailability = () => {
       alert('Slot deleted successfully.');
     } catch (error) {
       console.error('Failed to delete availability:', error);
-      alert('Failed to delete slot. Please try again.');
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Failed to delete slot. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -252,6 +271,17 @@ const DoctorAvailability = () => {
     setShowEditForm(true);
   };
 
+  const toggleCompactMode = () => {
+    setCompactMode(!compactMode);
+    if (!compactMode) {
+      // Apply compact mode
+      document.body.classList.add('compact-mode');
+    } else {
+      // Remove compact mode
+      document.body.classList.remove('compact-mode');
+    }
+  };
+
   return (
     <div className="availability-container">
       <h2>Doctor's Weekly Availability</h2>
@@ -264,13 +294,23 @@ const DoctorAvailability = () => {
         <p><strong>📅 Week of:</strong> {getCurrentWeekRange()}</p>
       </div>
 
-      <button 
-        className="add-button" 
-        onClick={openAddForm}
-        disabled={loading}
-      >
-        {loading ? 'Loading...' : '+ Add Slot'}
-      </button>
+      <div className="button-group">
+        <button 
+          className="add-button" 
+          onClick={openAddForm}
+          disabled={loading}
+        >
+          {loading ? 'Loading...' : '+ Add Slot'}
+        </button>
+        
+        <button 
+          className={`compact-toggle ${compactMode ? 'active' : ''}`}
+          onClick={toggleCompactMode}
+          title={compactMode ? 'Switch to normal size' : 'Switch to compact mode (80%)'}
+        >
+          {compactMode ? '🔍 Normal' : '📱 Compact'}
+        </button>
+      </div>
 
       {showAddForm && (
         <form className="availability-form" onSubmit={handleAdd}>
@@ -303,9 +343,9 @@ const DoctorAvailability = () => {
             value={addForm.status}
             onChange={e => setAddForm({ ...addForm, status: e.target.value })}
             required
+            disabled
           >
             <option value="available">Available</option>
-            <option value="booked">Booked</option>
           </select>
           <button 
             className="save-button" 
@@ -344,9 +384,9 @@ const DoctorAvailability = () => {
                 value={editForm.status}
                 onChange={e => setEditForm({ ...editForm, status: e.target.value })}
                 required
+                disabled
               >
                 <option value="available">Available</option>
-                <option value="booked">Booked</option>
               </select>
               <div style={{ marginTop: '12px', textAlign: 'right' }}>
                 <button 
@@ -362,77 +402,82 @@ const DoctorAvailability = () => {
         </div>
       )}
 
-      <table className="availability-table">
-        <thead>
-          <tr>
-            <th>Slot / Day</th>
-            {getThisWeekDates().map((date, i) => (
-              <th key={i}>{weekdays[i]}<br />({date})</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {workingHours.map((hour, i) => (
-            <tr key={i}>
-              <td>{hour} – {addOneHour(hour)}</td>
-              {getThisWeekDates().map((date, j) => {
-                const a = getAvailability(date, hour);
-                const status = a?.status?.toLowerCase();
-                return (
-                  <td key={j} className={status || 'empty'}>
-                    {status === 'available' && '🟢 Available'}
-                    {status === 'booked' && '🔴 Booked'}
-                    {!status && '⬜'}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="availability-list">
-        <h3>Availability List</h3>
-        <table className="detail-table">
+      <div className="table-responsive">
+        <table className="availability-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Slot / Day</th>
+              {getThisWeekDates().map((date, i) => (
+                <th key={i}>{weekdays[i]}<br />({date})</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(availabilities) && availabilities.map((a, i) => {
-              const statusClass = a.status?.toLowerCase() === 'available' ? 'available-text' : 'booked-text';
-              const date = a.available_date || a.date;
-              const time = a.available_time || a.slot;
-              return (
-                <tr key={a.availability_id || i}>
-                  <td>{date}</td>
-                  <td>{time} – {addOneHour(time)}</td>
-                  <td className={statusClass}>{a.status || 'N/A'}</td>
-                  <td>
-                    <button 
-                      className="edit-btn" 
-                      onClick={() => openEditForm(i)}
-                      disabled={loading}
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      className="delete-btn" 
-                      onClick={() => handleDelete(i)}
-                      disabled={loading}
-                    >
-                      {loading ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {workingHours.map((hour, i) => (
+              <tr key={i}>
+                <td>{hour} – {addOneHour(hour)}</td>
+                {getThisWeekDates().map((date, j) => {
+                  const a = getAvailability(date, hour);
+                  const status = a?.status?.toLowerCase();
+                  return (
+                    <td key={j} className={status || 'empty'}>
+                      {status === 'available' && '🟢 Available'}
+                      {status === 'booked' && '🔴 Booked'}
+                      {!status && '⬜'}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="availability-list">
+        <h3>Availability List</h3>
+        <div className="table-responsive">
+          <table className="detail-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.isArray(availabilities) && availabilities.map((a, i) => {
+                const statusClass = a.status?.toLowerCase() === 'available' ? 'available-text' : 'booked-text';
+                const date = a.available_date || a.date;
+                const time = a.available_time || a.slot;
+                return (
+                  <tr key={a.availability_id || i}>
+                    <td>{date}</td>
+                    <td>{time} – {addOneHour(time)}</td>
+                    <td className={statusClass}>{a.status || 'N/A'}</td>
+                    <td>
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => openEditForm(i)}
+                        disabled={loading}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="delete-btn" 
+                        onClick={() => handleDelete(i)}
+                        disabled={loading || a.status === 'booked'}
+                        title={a.status === 'booked' ? 'Cannot delete booked slot. Cancel appointment first.' : 'Delete slot'}
+                      >
+                        {loading ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

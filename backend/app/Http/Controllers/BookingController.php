@@ -180,8 +180,8 @@ class BookingController extends Controller
                 'is_read' => false
             ]);
 
-            // If cancelled or rescheduled, make the slot available again
-            if (in_array($request->status, ['cancelled_by_doctor', 'rescheduled'])) {
+            // If cancelled, rescheduled, or completed, make the slot available again
+            if (in_array($request->status, ['cancelled_by_doctor', 'cancelled_by_patient', 'rescheduled', 'completed', 'no_show'])) {
                 $appointment->availability->update(['status' => 'available']);
             }
 

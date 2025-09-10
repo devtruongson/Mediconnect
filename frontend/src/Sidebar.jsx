@@ -19,59 +19,60 @@ const Sidebar = () => {
     location.pathname === path ? "active-link" : "inactive-link";
 
   return (
-    <div className="sidebar">
-      <div className="logo-container">
-        <img
-          src="/doctor-images/logo.png"
-          alt="MediConnect Logo"
-          className="sidebar-logo"
-        />
-      </div>
-
-      <div className="profile-section">
-        <div className="avatar-wrapper">
+    <div style={{
+      width: "220px",
+    }}>
+      <div className="sidebar">
+        <div className="logo-container">
           <img
-            src={doctor?.image ? `http://localhost:8000${doctor.image}` : "/default-avatar.jpg"}
-            alt="Doctor"
-            className="avatar"
+            src="/doctor-images/logo.png"
+            alt="MediConnect Logo"
+            className="sidebar-logo"
           />
         </div>
-        <h3 className="name">{doctor?.name || user?.name || "Doctor"}</h3>
-        <p className="role">{doctor?.specialization || "Specialist"}</p>
-      </div>
-
-      <ul className="nav-links">
-        <li>
-          <Link to="/dashboard" className={linkClass("/dashboard")}>
-            <FaTachometerAlt /> Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link to="/doctorprofile" className={linkClass("/doctorprofile")}>
-            <FaCalendarAlt /> Doctor Profile
-          </Link>
-        </li>
-        <li>
-          <Link to="/AvailabilityPage" className={linkClass("/AvailabilityPage")}>
-            <FaUsers /> Availability Scheduling
-          </Link>
-        </li>
-        <li>
-          <Link to="/docappointment" className={linkClass("/docappointment")}>
-            <FaEnvelope /> Appointment Viewing
-          </Link>
-        </li>
-        <li>
-          <Link to="/appointment-management" className={linkClass("/appointment-management")}>
-            <FaEnvelope /> Appointment Management
-          </Link>
-        </li>
-      </ul>
-
-      <div className="logout">
-        <button onClick={handleLogout} className="inactive-link logout-button">
-          <FaSignOutAlt /> Logout
-        </button>
+        <div className="profile-section">
+          <div className="avatar-wrapper">
+            <img
+              src={doctor?.image ? `http://localhost:8000${doctor.image}` : "/default-avatar.jpg"}
+              alt="Doctor"
+              className="avatar"
+            />
+          </div>
+          <h3 className="name">{doctor?.name || user?.name || "Doctor"}</h3>
+          <p className="role">{doctor?.specialization || "Specialist"}</p>
+        </div>
+        <ul className="nav-links">
+          <li>
+            <Link to="/dashboard" className={linkClass("/dashboard")}>
+              <FaTachometerAlt /> Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link to="/doctorprofile" className={linkClass("/doctorprofile")}>
+              <FaCalendarAlt /> Doctor Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/AvailabilityPage" className={linkClass("/AvailabilityPage")}>
+              <FaUsers /> Availability Scheduling
+            </Link>
+          </li>
+          <li>
+            <Link to="/docappointment" className={linkClass("/docappointment")}>
+              <FaEnvelope /> Appointment Viewing
+            </Link>
+          </li>
+          <li>
+            <Link to="/appointment-management" className={linkClass("/appointment-management")}>
+              <FaEnvelope /> Appointment Management
+            </Link>
+          </li>
+        </ul>
+        <div className="logout">
+          <button onClick={handleLogout} className="inactive-link logout-button">
+            <FaSignOutAlt /> Logout
+          </button>
+        </div>
       </div>
     </div>
   );

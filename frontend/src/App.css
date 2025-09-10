@@ -168,7 +168,6 @@ body {
 
 /* Dashboard Content*/
 .dashboard-container {
-  margin-left: 220px;
   background-color: #fff;
   box-sizing: border-box;
 }
@@ -277,7 +276,6 @@ body {
   grid-template-columns: 280px 1fr;
   gap: 24px;
   align-items: start;
-  margin-left: 220px;
 }
 
 .left-panel {
@@ -479,7 +477,6 @@ body {
   margin: 0 auto;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fbfd;
-  margin-left: 220px;
 }
 
 h2 {
@@ -495,7 +492,6 @@ h2 {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 20px;
   font-weight: 500;
 }
 
@@ -668,7 +664,6 @@ h2 {
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin-left: 320px;
 }
 
 /* header */
@@ -1079,6 +1074,8 @@ button:disabled {
 .delete-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: #ccc !important;
+  color: #666 !important;
 }
 
 .add-button:disabled {
@@ -1139,12 +1136,56 @@ button:disabled {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-  margin-bottom: 30px;
 }
 
 .add-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Compact Toggle Button */
+.compact-toggle {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compact-toggle:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.compact-toggle.active {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+}
+
+.compact-toggle.active:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+}
+
+.compact-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Enhanced Form Styles */
@@ -1293,7 +1334,7 @@ button:disabled {
   border-collapse: collapse;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-width: 500px;
 }
 
 .detail-table thead {
@@ -1379,14 +1420,23 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+/* Table Responsive Wrapper */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: white;
+  margin-bottom: 30px;
+}
+
 /* Calendar Table Styles */
 .availability-table {
   width: 100%;
   border-collapse: collapse;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  background: white;
+  min-width: 600px;
 }
 
 .availability-table thead {
@@ -1428,31 +1478,258 @@ button:disabled {
   font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive Design for 13 inch screens and smaller */
+@media (max-width: 1366px) {
+  .sidebar {
+    width: 180px;
+    padding: 15px 10px;
+  }
+  
+  .topbar {
+    left: 180px;
+    width: calc(100% - 180px);
+  }
+  
+  .content-area {
+    margin-left: 180px;
+    padding: 60px 20px 20px 20px;
+  }
+  
   .availability-container {
+    margin-left: 180px;
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .doctor-profile-container {
+    margin-left: 180px;
+  }
+  
+  .app-container {
+    margin-left: 200px;
+  }
+  
+  .dashboard-container {
+    margin-left: 180px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 160px;
+    padding: 12px 8px;
+  }
+  
+  .topbar {
+    left: 160px;
+    width: calc(100% - 160px);
+    padding: 4px 12px;
+  }
+  
+  .content-area {
+    margin-left: 160px;
+    padding: 50px 15px 15px 15px;
+  }
+  
+  .availability-container {
+    margin-left: 160px;
     padding: 15px;
   }
   
-  .availability-container h2 {
-    font-size: 2rem;
+  .doctor-profile-container {
+    margin-left: 160px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
   
-  .popup-content {
-    padding: 25px;
-    width: 95%;
+  .app-container {
+    margin-left: 180px;
   }
   
-  .detail-table th,
-  .detail-table td {
-    padding: 10px 15px;
-    font-size: 0.9rem;
+  .dashboard-container {
+    margin-left: 160px;
+  }
+  
+  .stat-grid {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .availability-table {
+    font-size: 0.8rem;
   }
   
   .availability-table th,
   .availability-table td {
-    padding: 15px 10px;
+    padding: 8px 6px;
+  }
+  
+  .detail-table th,
+  .detail-table td {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 15px;
+  }
+  
+  .topbar {
+    left: 0;
+    width: 100%;
+    position: relative;
+  }
+  
+  .content-area {
+    margin-left: 0;
+    padding: 20px 15px;
+  }
+  
+  .availability-container {
+    margin-left: 0;
+    padding: 15px;
+  }
+  
+  .doctor-profile-container {
+    margin-left: 0;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .app-container {
+    margin-left: 0;
+    padding: 15px;
+  }
+  
+  .dashboard-container {
+    margin-left: 0;
+  }
+  
+  .availability-container h2 {
+    font-size: 1.8rem;
+  }
+  
+  .popup-content {
+    padding: 20px;
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .availability-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .availability-form select,
+  .availability-form input {
+    min-width: 100%;
+  }
+  
+  .availability-table {
+    font-size: 0.7rem;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+  
+  .availability-table th,
+  .availability-table td {
+    padding: 6px 4px;
+    min-width: 80px;
+  }
+  
+  .detail-table {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+  
+  .detail-table th,
+  .detail-table td {
+    padding: 8px 10px;
     font-size: 0.8rem;
+    min-width: 100px;
+  }
+  
+  .doctor-info p {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin: 2px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .compact-toggle {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .availability-container {
+    padding: 10px;
+  }
+  
+  .availability-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .doctor-info {
+    padding: 15px;
+  }
+  
+  .doctor-info p {
+    font-size: 0.8rem;
+  }
+  
+  .add-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+  
+  .popup-content {
+    padding: 15px;
+    width: 98%;
+  }
+  
+  .availability-table {
+    font-size: 0.6rem;
+  }
+  
+  .availability-table th,
+  .availability-table td {
+    padding: 4px 2px;
+    min-width: 60px;
+  }
+  
+  .detail-table th,
+  .detail-table td {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+    min-width: 80px;
+  }
+  
+  .edit-btn,
+  .delete-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
   }
 }
 
@@ -1583,6 +1860,24 @@ button:disabled {
 .popup-content input:focus,
 .popup-content select:focus {
   transform: scale(1.02);
+}
+
+/* Compact Mode Styles */
+body.compact-mode {
+  transform: scale(0.8);
+  transform-origin: top left;
+  width: 125%;
+  height: 125%;
+  overflow-x: auto;
+}
+
+body.compact-mode .availability-container {
+  min-width: 1000px;
+}
+
+/* Smooth transition for compact mode */
+body {
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
 /* Success/Error States */
