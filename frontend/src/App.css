@@ -2112,6 +2112,16 @@ body {
   cursor: not-allowed;
 }
 
+.status-text {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  display: inline-block;
+}
+
 @media (max-width: 768px) {
   .appointments-list {
     grid-template-columns: 1fr;

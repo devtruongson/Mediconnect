@@ -21,7 +21,7 @@ const AppointmentList = () => {
       
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8000/api/appointments?doctor_id=${doctorId}`, {
+        const response = await axios.get(`http://localhost:8000/api/appointments`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Accept': 'application/json'
@@ -214,6 +214,21 @@ const AppointmentList = () => {
                   {loading ? 'Updating...' : 'No Show'}
                 </button>
               </>
+            )}
+            {a.status === "completed" && (
+              <span className="status-text">Completed</span>
+            )}
+            {a.status === "cancelled_by_doctor" && (
+              <span className="status-text">Cancelled by Doctor</span>
+            )}
+            {a.status === "cancelled_by_patient" && (
+              <span className="status-text">Cancelled by Patient</span>
+            )}
+            {a.status === "no_show" && (
+              <span className="status-text">No Show</span>
+            )}
+            {a.status === "rescheduled" && (
+              <span className="status-text">Rescheduled</span>
             )}
           </div>
         </div>

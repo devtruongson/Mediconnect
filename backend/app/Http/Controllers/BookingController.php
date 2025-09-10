@@ -122,10 +122,18 @@ class BookingController extends Controller
      */
     public function getDoctorAppointments(Request $request)
     {
-        $doctorId = $request->user()->doctor->doctor_id;
+        $mediUser = $request->user();
+        $doctor = Doctor::where('user_id', $mediUser->user_id)->first();
         
-        $appointments = Appointment::whereHas('availability', function($query) use ($doctorId) {
-                $query->where('doctor_id', $doctorId);
+        if (!$doctor) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Doctor profile not found'
+            ], 404);
+        }
+        
+        $appointments = Appointment::whereHas('availability', function($query) use ($doctor) {
+                $query->where('doctor_id', $doctor->doctor_id);
             })
             ->with(['patient', 'availability'])
             ->orderBy('created_at', 'desc')
@@ -156,10 +164,18 @@ class BookingController extends Controller
 
         try {
             $appointment = Appointment::findOrFail($appointmentId);
-            $doctorId = $request->user()->doctor->doctor_id;
+            $mediUser = $request->user();
+            $doctor = Doctor::where('user_id', $mediUser->user_id)->first();
+            
+            if (!$doctor) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Doctor profile not found'
+                ], 404);
+            }
 
             // Check if this appointment belongs to the doctor
-            if ($appointment->availability->doctor_id !== $doctorId) {
+            if ($appointment->availability->doctor_id !== $doctor->doctor_id) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Unauthorized to update this appointment'
@@ -173,7 +189,7 @@ class BookingController extends Controller
             $statusMessage = $this->getStatusMessage($request->status);
             
             Notification::create([
-                'doctor_id' => $doctorId,
+                'doctor_id' => $doctor->doctor_id,
                 'patient_id' => $patient->patient_id,
                 'message' => "Your appointment status has been updated to: {$statusMessage}",
                 'type' => 'appointment_update',
